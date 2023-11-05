@@ -5,22 +5,53 @@
         <img class="contact-info-img" :src="object.avatarUrl" alt="" />
         <div class="contact-info-state">
           <div class="contact-info-state-name">{{ object.displayName }}</div>
-          <div v-if="!object.isOnline" class="contact-info-state_red-circle"></div>
+          <div
+            v-if="!object.isOnline"
+            class="contact-info-state_red-circle"
+          ></div>
           <div v-else class="contact-info-state_green-circle"></div>
         </div>
       </div>
       <div class="ailling-fields">
-        <div class="ailling-fields-text"></div>
+        <div class="ailling-fields-text">
+          <p
+            class="ailling-fields-text-posts"
+            v-for="post in object.posts"
+            :class="{ active: post.isPositive, disconnect: !post.isPositive }"
+          >
+            {{ post.text }}
+          </p>
+        </div>
         <div class="ailling-fields_comments">
-          <textarea class="ailling-fields_comments-textarea" name="comment" id="comment" cols="40" rows="5"></textarea>
+          <textarea
+            v-model="postText"
+            class="ailling-fields_comments-textarea"
+            name="comment"
+            id="comment"
+            cols="40"
+            rows="5"
+          ></textarea>
           <div class="ailling-fields_comments-buttons">
-            <button class="ailling-fields_comments-buttons-btn-good style-btn">Хороший</button>
-            <button class="ailling-fields_comments-buttons-btn-nogood style-btn">Плохой</button>
+            <button
+              class="ailling-fields_comments-buttons-btn-good style-btn"
+              @click="createPost(true)"
+            >
+              <!-- <img class="" src="/src/assets/like.svg" alt=""> -->
+              Хорошо
+            </button>
+            <button
+              class="ailling-fields_comments-buttons-btn-nogood style-btn"
+              @click="createPost(false)"
+            >
+              Плохой
+            </button>
           </div>
         </div>
       </div>
+      <button @click.prevent="closefn" class="close">
+        <img src="../assets/close1.svg" alt="">
+      </button>
     </div>
-    <button @click.prevent="closefn" class="close">Close</button>
   </div>
 </template>
     
@@ -35,7 +66,7 @@ export default {
   mounted() {
     axios
       .get(
-        "https://32f8-95-28-137-40.ngrok-free.app/api/users/" +
+        "https://08be-95-28-137-40.ngrok-free.app/api/users/" +
           this.id +
           "/posts",
         {
@@ -52,6 +83,7 @@ export default {
   data() {
     return {
       object: {},
+      postText: "",
     };
   },
 
@@ -59,12 +91,48 @@ export default {
     Close() {
       this.$emit("toggle-modal");
     },
+    createPost(isPositive) {
+      if (this.postText == "") {
+        window.alert("Далбакряк")
+        return
+      }
+      axios({
+        method: "post",
+        url: "https://08be-95-28-137-40.ngrok-free.app/api/posts",
+        headers: {},
+        data: {
+          userId: this.object.id,
+          text: this.postText,
+          isPositive: isPositive,
+        },
+      }).then((res) => {
+        this.postText = ""
+        axios
+          .get(
+            "https://08be-95-28-137-40.ngrok-free.app/api/users/" +
+              this.id +
+              "/posts",
+            {
+              headers: {
+                "ngrok-skip-browser-warning": "true",
+              },
+            }
+          )
+          .then((res) => {
+            this.object = res.data;
+          });
+      });
+    },
   },
 };
 </script>
-    
-    
+
+
 <style lang="sass" scoped>
+.active
+  border: 2px solid green
+.disconnect
+  border: 2px solid red
 .style-btn
   background: #d99f5f
   padding: 10px 20px
@@ -82,11 +150,24 @@ export default {
   align-items: center
   justify-content: center
   & .container
+    position: relative
     border: 2px solid #000
     border-radius: 10px
     padding: 100px
     background: #d99f5f
     display: flex
+    & .close
+      position: absolute
+      top: 20px
+      right: 20px
+      width: 40px
+      height: 40px
+      border-radius: 15px
+      border: 0
+      outline: 1px solid #000
+      background: 0
+      &:hover
+        outline: 2px solid #000
     & .contact-info
       margin-right: 100px
       &-img
@@ -114,15 +195,23 @@ export default {
           margin-left: 10px
     & .ailling-fields
       &-text
+        padding-top: 20px
         height: 400px
         background: #996ca5
         border-radius: 15px
-        border: 3px solid #000
+        border: 2px solid #000
         margin-bottom: 30px
+        overflow: auto
+        &-posts
+          padding: 20px
+          margin-bottom: 20px
+          margin-left: 20px
+          border-radius: 15px
+          width: 350px
       &_comments
         display: flex
         &-textarea
-          background: #d99f5f
+          background: #ec6d6d
           border-radius: 15px
           border: 1px solid #000
           outline: none
@@ -143,8 +232,21 @@ export default {
             &:hover
               outline: 2px solid #FF0000
 
-
-  & .close
-    display: none
+html * /* override x.xhtml.ru style */
+  scrollbar-width: thin
+  scrollbar-color: blue orange
+*::-webkit-scrollbar,
+html *::-webkit-scrollbar
+  height: 10px
+  width: 10px
+*::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track
+  background: #996ca5
+  border-radius: 65px
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb
+  background: #d99f5f
+  border-radius: 5px
+  border: 3px solid #d99f5f
 </style>
 

@@ -61,7 +61,11 @@ export default {
   align-items: center
   width: 250px
   height: 250px
-  background: #d99f5f  
+  background: #d99f5f 
+  &-title
+    text-align: center
+    margin-bottom: 10px
+    margin-top: 10px
   &-img
     width: 80px
     height: 80px
@@ -70,12 +74,10 @@ export default {
     margin-bottom: 10px
     & img
       border-radius: 100%
-  &-title
   &-state
     position: absolute
     right: 20px
     top: 20px
-    &-text
     &_red-circle
       width: 10px
       height: 10px

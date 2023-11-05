@@ -1,66 +1,85 @@
 <template>
-  <div class="container">
-    <Cart
-    class="cart" 
-    v-for="object in objects" 
-    v-bind:cartobject="object"
-    v-bind:displayName="object.displayName"
-    v-bind:isOnline="object.isOnline"
-    v-bind:avatarUrl="object.avatarUrl"
-    v-bind:totalPositiveCount="object.totalPositiveCount"
-    v-bind:totalNegativeCount="object.totalNegativeCount"
-    v-bind:id="object.id" 
-    @click.prevent="openModal(object.id)"
-    />
-    <Modal v-bind:id="id" v-if="isVisibility" :closefn="closeModal" />
+  <div>
+    <div class="container" v-if="!isLoading">
+      <Cart
+        class="cart"
+        v-for="object in objects"
+        v-bind:cartobject="object"
+        v-bind:displayName="object.displayName"
+        v-bind:isOnline="object.isOnline"
+        v-bind:avatarUrl="object.avatarUrl"
+        v-bind:totalPositiveCount="object.totalPositiveCount"
+        v-bind:totalNegativeCount="object.totalNegativeCount"
+        v-bind:id="object.id"
+        @click.prevent="openModal(object.id)"
+      />
+      <Modal v-bind:id="id" v-if="isVisibility" :closefn="closeModal" />
+    </div>
+    <div class="preloader" v-else>
+      <Loader />
+    </div>
   </div>
 </template>
 
 <script>
-import Cart from "./Cart.vue"
-import Modal from "./Modal.vue"
-import axios from 'axios'
+import Cart from "./Cart.vue";
+import Modal from "./Modal.vue";
+import Loader from "./Loader.vue";
+import axios from "axios";
 
 export default {
-
+  
   mounted() {
-    axios.get('https://32f8-95-28-137-40.ngrok-free.app/api/users', {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    }).then((res) => {
-      this.objects = res.data
-    })
+    axios
+      .get("https://08be-95-28-137-40.ngrok-free.app/api/users", {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      })
+      .then((res) => {
+        this.objects = res.data;
+        setInterval(this.updateState, 500);
+        this.isLoading = false
+      });
   },
 
   data() {
     return {
       objects: [],
       isVisibility: false,
-      id: ""
+      id: "",
+      isLoading: true,
     };
   },
   components: {
     Cart,
     Modal,
+    Loader,
   },
   methods: {
     openModal(id) {
-      this.id = id
-      this.isVisibility = true
+      this.id = id;
+      this.isVisibility = true;
     },
     closeModal() {
-       this.isVisibility = false
-    }
+      this.isVisibility = false;
+    },
+    updateState() {
+      axios
+        .get("https://08be-95-28-137-40.ngrok-free.app/api/users", {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        })
+        .then((res) => {
+          this.objects = res.data;
+        });
+    },
   },
-
-
-}
-
+};
 </script>
 
 <style lang="sass" scoped>
-
 .container
   max-width: 1400px
   height: 94vh
@@ -79,20 +98,20 @@ export default {
     &:hover
       box-shadow: 10px 5px 5px #FF9573
 
-html * /* override x.xhtml.ru style */ 
+html * /* override x.xhtml.ru style */
   scrollbar-width: thin
   scrollbar-color: blue orange
 *::-webkit-scrollbar,
-html *::-webkit-scrollbar 
+html *::-webkit-scrollbar
   height: 10px
   width: 10px
 *::-webkit-scrollbar-track,
-html *::-webkit-scrollbar-track 
+html *::-webkit-scrollbar-track
   background: #996ca5
+  border-radius: 65px
 *::-webkit-scrollbar-thumb,
-html *::-webkit-scrollbar-thumb 
+html *::-webkit-scrollbar-thumb
   background: #d99f5f
   border-radius: 5px
   border: 3px solid #d99f5f
-
 </style>
