@@ -11,6 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TPP.MessageBus.Shared", "TP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TPP.Bot.Host", "TPP.Bot.Host\TPP.Bot.Host.csproj", "{53AA49AB-39BA-4A40-A2DB-464BC6A6B180}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{6E48B156-33ED-4528-BCEA-7EB9D9B5D694}"
+	ProjectSection(SolutionItems) = preProject
+		ngrok.yml = ngrok.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
