@@ -10,7 +10,7 @@ services:
       dockerfile: TPP.Api/Dockerfile
     environment:
       - ASPNETCORE_HTTP_PORTS=80
-      - MessageBusHost=prod.queue
+      - MessageBusHost=local.queue
       - ConnectionStrings:Postgres=Host=local.postgres;Port=5432;Database=TPP.db;UserName=postgres;Password=thebestpassword123
       - AutoMigrate=true
     ports:
@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: TPP.Bot.Host/Dockerfile
     environment:
-      - MessageBusHost=prod.queue
+      - MessageBusHost=local.queue
  
   postgres:
     container_name: local.postgres
