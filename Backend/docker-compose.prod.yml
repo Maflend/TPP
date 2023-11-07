@@ -2,46 +2,61 @@ version: '3.4'
 
 services:
   tpp.api:
-    container_name: tpp.api
+    container_name: prod.tpp.api
     image: ${DOCKER_REGISTRY-}tppapi
+    restart: always
     build:
       context: .
       dockerfile: TPP.Api/Dockerfile
     environment:
       - ASPNETCORE_HTTP_PORTS=80
-      - ASPNETCORE_HTTPS_PORTS=443
+      - MessageBusHost=prod.queue
+      - ConnectionStrings:Postgres=Host=prod.postgres;Port=5432;Database=TPP.db;UserName=postgres;Password=thebestpassword123
+      - AutoMigrate=true
     ports:
-      - "51830:80"
-      - "51836:443"
+      - "51840:80"
+      - "51846:443"
 
   tpp.bot.host:
-    container_name: tpp.bot.host
+    container_name: prod.tpp.bot.host
     image: ${DOCKER_REGISTRY-}tppbothost
+    restart: always
     build:
       context: .
       dockerfile: TPP.Bot.Host/Dockerfile
+    environment:
+      - MessageBusHost=prod.queue
  
   postgres:
-    container_name: postgres
+    container_name: prod.postgres
     image: postgres
     environment:
         POSTGRES_DB: TPP.db
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: thebestpassword123
     ports:
-        - "5450:5432"
+        - "5451:5432"
     volumes:
         - postgres-data:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: queue
+    container_name: prod.queue
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+
+  ngrok:
+    container_name: prod.ngrok
+    image: wernight/ngrok
+    volumes:
+      - ./ngrok.yml:/home/ngrok/.ngrok2/ngrok.yml
+    ports:
+      - "4041:4041"
+    command: ["ngrok", "http", "tpp.api:80"]
 
 
 volumes:

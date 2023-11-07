@@ -20,7 +20,7 @@ builder.Services.AddMassTransit(cfg =>
     cfg.UsingRabbitMq((brc, rbfc) =>
     {
         rbfc.UseDelayedMessageScheduler();
-        rbfc.Host("queue", h =>
+        rbfc.Host(builder.Configuration.GetValue<string>("MessageBusHost"), h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -50,6 +50,15 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+var dbContext = app.Services.GetRequiredService<TppDbContext>();
+var autoMigrate = app.Configuration.GetValue<bool>("AutoMigrate");
+
+if (autoMigrate && (await dbContext.Database.GetPendingMigrationsAsync()).Any())
+{
+    await dbContext.Database.EnsureCreatedAsync();
+}
+
 
 #region Users
 

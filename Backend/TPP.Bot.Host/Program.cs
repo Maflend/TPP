@@ -13,11 +13,14 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         builder
         .AddJsonFile("appsettings.json")
-        .AddJsonFile("appsettings.Development.json");
+        .AddJsonFile("appsettings.Development.json", true)
+        .AddEnvironmentVariables();
     })
     .ConfigureServices((hostBuilder, services) =>
     {
         services.Configure<DiscordSettings>(hostBuilder.Configuration.GetSection(DiscordSettings.Section));
+
+        Console.WriteLine("XYP " + hostBuilder.Configuration.GetValue<string>("MessageBusHost"));
 
         services.AddMassTransit(cfg =>
         {
@@ -29,7 +32,7 @@ var builder = Host.CreateDefaultBuilder(args)
             cfg.UsingRabbitMq((brc, rbfc) =>
             {
                 rbfc.UseDelayedMessageScheduler();
-                rbfc.Host("queue", h =>
+                rbfc.Host(hostBuilder.Configuration.GetValue<string>("MessageBusHost"), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
