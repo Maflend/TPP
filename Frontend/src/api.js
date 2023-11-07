@@ -1,0 +1,1 @@
+export const API_BEC_DIS = "https://ea53-95-28-137-40.ngrok-free.app/api/"

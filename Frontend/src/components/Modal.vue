@@ -4,12 +4,17 @@
       <div class="contact-info">
         <img class="contact-info-img" :src="object.avatarUrl" alt="" />
         <div class="contact-info-state">
+          <div class="cart-state">
+            <div class="online" v-if="!isOnline">
+              <div class="cart-state_red-circle"></div>
+              <p>Offline</p>
+            </div>
+            <div class="online" v-else>
+              <div class="cart-state_green-circle"></div>
+              <p>Online</p>
+            </div>
+          </div>
           <div class="contact-info-state-name">{{ object.displayName }}</div>
-          <div
-            v-if="!object.isOnline"
-            class="contact-info-state_red-circle"
-          ></div>
-          <div v-else class="contact-info-state_green-circle"></div>
         </div>
       </div>
       <div class="ailling-fields">
@@ -49,7 +54,7 @@
         </div>
       </div>
       <button @click.prevent="closefn" class="close">
-        <img src="../assets/close1.svg" alt="">
+        <img src="../assets/close1.svg" alt="" />
       </button>
     </div>
   </div>
@@ -57,6 +62,8 @@
     
 <script>
 import axios from "axios";
+import { API_BEC_DIS } from "../api";
+
 export default {
   props: {
     id: String,
@@ -65,16 +72,11 @@ export default {
 
   mounted() {
     axios
-      .get(
-        "https://08be-95-28-137-40.ngrok-free.app/api/users/" +
-          this.id +
-          "/posts",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      )
+      .get(`${API_BEC_DIS}users/` + this.id + "/posts", {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      })
       .then((res) => {
         this.object = res.data;
       });
@@ -93,31 +95,28 @@ export default {
     },
     createPost(isPositive) {
       if (this.postText == "") {
-        window.alert("Далбакряк")
-        return
+        window.alert("Далбакряк");
+        return;
       }
       axios({
         method: "post",
-        url: "https://08be-95-28-137-40.ngrok-free.app/api/posts",
-        headers: {},
+        url: `${API_BEC_DIS}posts`,
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
         data: {
           userId: this.object.id,
           text: this.postText,
           isPositive: isPositive,
         },
       }).then((res) => {
-        this.postText = ""
+        this.postText = "";
         axios
-          .get(
-            "https://08be-95-28-137-40.ngrok-free.app/api/users/" +
-              this.id +
-              "/posts",
-            {
-              headers: {
-                "ngrok-skip-browser-warning": "true",
-              },
-            }
-          )
+          .get(`${API_BEC_DIS}users/` + this.id + "/posts", {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
+          })
           .then((res) => {
             this.object = res.data;
           });
@@ -151,10 +150,9 @@ export default {
   justify-content: center
   & .container
     position: relative
-    border: 2px solid #000
     border-radius: 10px
-    padding: 100px
-    background: #d99f5f
+    padding: 100px 40px 40px 40px
+    background: var(--cart)
     display: flex
     & .close
       position: absolute
@@ -162,7 +160,6 @@ export default {
       right: 20px
       width: 40px
       height: 40px
-      border-radius: 15px
       border: 0
       outline: 1px solid #000
       background: 0
@@ -171,28 +168,32 @@ export default {
     & .contact-info
       margin-right: 100px
       &-img
-        width: 150px
-        border-radius: 100%
+        width: 250px
+        border-radius: 15px
         margin: 0 auto
         margin-bottom: 30px
       &-state
         display: flex
-        align-items: center
-        justify-content: center
+        flex-direction: column
         &-name
           font-size: 30px
-        &_red-circle
+        & .online
+          display: flex
+          align-items: center
+        & .cart-state_red-circle
           width: 10px
           height: 10px
           background: red
           border-radius: 100%
           margin-left: 10px
-        &_green-circle
+          margin-right: 5px
+        & .cart-state_green-circle
           width: 10px
           height: 10px
           background: green
           border-radius: 100%
           margin-left: 10px
+          margin-right: 5px
     & .ailling-fields
       &-text
         padding-top: 20px

@@ -1,4 +1,4 @@
-
+@import url(./assets/colors.sass);
 *,
 *::before,
 *::after {
@@ -38,7 +38,7 @@ dd {
 
 body {
   min-height: 100vh;
-  background: #996ca5;
+  background: var(--bg);
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
   line-height: 1.5;

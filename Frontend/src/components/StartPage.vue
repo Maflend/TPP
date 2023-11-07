@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="center">
     <div class="container" v-if="!isLoading">
       <Cart
         class="cart"
@@ -26,19 +26,20 @@ import Cart from "./Cart.vue";
 import Modal from "./Modal.vue";
 import Loader from "./Loader.vue";
 import axios from "axios";
+import { API_BEC_DIS } from '../api';
 
 export default {
   
   mounted() {
     axios
-      .get("https://08be-95-28-137-40.ngrok-free.app/api/users", {
+      .get(API_BEC_DIS+"users", {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
       })
       .then((res) => {
         this.objects = res.data;
-        setInterval(this.updateState, 500);
+        setInterval(this.updateState, 2000);
         this.isLoading = false
       });
   },
@@ -66,7 +67,7 @@ export default {
     },
     updateState() {
       axios
-        .get("https://08be-95-28-137-40.ngrok-free.app/api/users", {
+        .get(API_BEC_DIS+"users", {
           headers: {
             "ngrok-skip-browser-warning": "true",
           },
@@ -80,15 +81,17 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import url(../assets/colors.sass)
+
+.center
+  height: 95vh
+  display: flex
+  align-items: center
+  justify-content: center
 .container
-  max-width: 1400px
-  height: 94vh
+  max-width: 1150px
+  height: 90vh
   margin: 0 auto
-  border: 2px solid #000
-  border-radius: 10px
-  padding: 20px 110px
-  margin-left: 50px
-  margin-right: 50px
   display: flex
   flex-wrap: wrap
   overflow: auto
@@ -96,7 +99,7 @@ export default {
     margin: 15px
     transition: 0.3s
     &:hover
-      box-shadow: 10px 5px 5px #FF9573
+      box-shadow: 5px 5px 5px #7d7f7d
 
 html * /* override x.xhtml.ru style */
   scrollbar-width: thin
@@ -107,11 +110,11 @@ html *::-webkit-scrollbar
   width: 10px
 *::-webkit-scrollbar-track,
 html *::-webkit-scrollbar-track
-  background: #996ca5
+  background: #fff
   border-radius: 65px
 *::-webkit-scrollbar-thumb,
 html *::-webkit-scrollbar-thumb
-  background: #d99f5f
+  background: #fff
   border-radius: 5px
-  border: 3px solid #d99f5f
+  border: 3px solid #4b4b4b
 </style>
