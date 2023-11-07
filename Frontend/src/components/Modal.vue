@@ -15,9 +15,22 @@
             </div>
           </div>
           <div class="contact-info-state-name">{{ object.displayName }}</div>
+          <div class="contact-info-state-likes">
+            <button class="contact-info-state-likes_like style">
+              <img class="" src="/src/assets/like.svg" alt="" />{{
+                object.totalPositiveCount
+              }}
+            </button>
+            <button class="contact-info-state-likes_dislike style">
+              <img class="" src="/src/assets/dislike.svg" alt="" />{{
+                object.totalNegativeCount
+              }}
+            </button>
+          </div>
         </div>
       </div>
       <div class="ailling-fields">
+        <div class="ailling-fields-messages">ОТЗЫВЫ ({{object.totalPositiveCount + object.totalNegativeCount}})</div>
         <div class="ailling-fields-text">
           <p
             class="ailling-fields-text-posts"
@@ -31,6 +44,7 @@
           <textarea
             v-model="postText"
             class="ailling-fields_comments-textarea"
+            placeholder="Оставить отзыв..."
             name="comment"
             id="comment"
             cols="40"
@@ -41,20 +55,22 @@
               class="ailling-fields_comments-buttons-btn-good style-btn"
               @click="createPost(true)"
             >
-              <!-- <img class="" src="/src/assets/like.svg" alt=""> -->
               Хорошо
+              <img src="/src/assets/like.svg" alt="">
             </button>
             <button
               class="ailling-fields_comments-buttons-btn-nogood style-btn"
               @click="createPost(false)"
             >
               Плохой
+              <img src="/src/assets/dislike.svg" alt="">
             </button>
           </div>
         </div>
       </div>
       <button @click.prevent="closefn" class="close">
-        <img src="../assets/close1.svg" alt="" />
+        <img class="close-img" src="../assets/arrowleft.svg" alt="" />
+        <p class="close-text">Назад</p>
       </button>
     </div>
   </div>
@@ -128,15 +144,27 @@ export default {
 
 
 <style lang="sass" scoped>
+
+.style
+  border: 0
+  border-radius: 10px
+  background-color: rgba(255,0,0,0)
 .active
   border: 2px solid green
 .disconnect
   border: 2px solid red
 .style-btn
-  background: #d99f5f
+  background: #fff
   padding: 10px 20px
-  margin-left: 20px
-  border-radius: 15px
+  border-radius: 10px
+  width: 180px
+  margin-top: 20px
+  display: flex
+  align-items: center
+  justify-content: center
+  & img
+    width: 20px
+    margin-left: 13px
 .modal
   background-color: rgba(0, 0, 0, 0.7)
   position: absolute
@@ -157,26 +185,53 @@ export default {
     & .close
       position: absolute
       top: 20px
-      right: 20px
-      width: 40px
-      height: 40px
+      left: 20px
       border: 0
-      outline: 1px solid #000
       background: 0
-      &:hover
-        outline: 2px solid #000
+      display: flex
+      align-items: center
+      cursor: pointer
+      &-img
+        width: 25px
+        margin-right: 0
+      &-text
+        font-size: 26px
+        padding-left: 10px
+        color: #4b4b4b
+        &:hover
+          color: #000
     & .contact-info
-      margin-right: 100px
+      margin-right: 50px
       &-img
         width: 250px
         border-radius: 15px
         margin: 0 auto
-        margin-bottom: 30px
+        &:hover
+          width: 300px
       &-state
         display: flex
         flex-direction: column
+        &-likes
+          display: flex
+          margin-top: 15px
+          &_like
+            margin-right: 10px
+            display: flex
+            width: 70px
+            & img
+              width: 25px
+              margin-right: 10px
+          &_dislike
+            margin-right: -8px
+            width: 70px
+            display: flex
+            & img
+              width: 25px
+              margin-right: 10px
         &-name
           font-size: 30px
+          color: #4b4b4b
+          margin-top: 10px
         & .online
           display: flex
           align-items: center
@@ -185,7 +240,6 @@ export default {
           height: 10px
           background: red
           border-radius: 100%
-          margin-left: 10px
           margin-right: 5px
         & .cart-state_green-circle
           width: 10px
@@ -195,13 +249,20 @@ export default {
           margin-left: 10px
           margin-right: 5px
     & .ailling-fields
+      &-messages
+        height: 50px
+        border: 1px solid #e8e8e8
+        border-bottom: 0
+        border-radius: 10px 10px 0 0 
+        background: #f6f8f9
+        color: #4b4b4b
+        display: flex
+        align-items: center
+        padding-left: 20px
       &-text
         padding-top: 20px
-        height: 400px
-        background: #996ca5
-        border-radius: 15px
-        border: 2px solid #000
-        margin-bottom: 30px
+        height: 320px
+        border: 1px solid #e8e8e8
         overflow: auto
         &-posts
           padding: 20px
@@ -210,28 +271,31 @@ export default {
           border-radius: 15px
           width: 350px
       &_comments
-        display: flex
         &-textarea
-          background: #ec6d6d
-          border-radius: 15px
-          border: 1px solid #000
+          padding-top: 10px
+          padding-left: 20px
+          border-radius: 0 0 10px 10px
+          border: 1px solid #e8e8e8
+          border-top: 0
           outline: none
+          height: 50px
         &-buttons
           display: flex
-          flex-direction: column
           justify-content: space-between
           &-btn-good
-            color: #34D800
-            outline: 1px solid #34D800
+            color: #4b4b4b
+            outline: 1px solid #e8e8e8
             border: 0
+            transition: 0.3s
             &:hover
-              outline: 2px solid #34D800
+              background: #f0f0f1
           &-btn-nogood
-            color: #FF0000
-            outline: 1px solid #FF0000
+            color: #4b4b4b
+            outline: 1px solid #e8e8e8
             border: 0
+            transition: 0.3s
             &:hover
-              outline: 2px solid #FF0000
+              background: #f0f0f1
 
 html * /* override x.xhtml.ru style */
   scrollbar-width: thin
@@ -250,4 +314,3 @@ html *::-webkit-scrollbar-thumb
   border-radius: 5px
   border: 3px solid #d99f5f
 </style>
-

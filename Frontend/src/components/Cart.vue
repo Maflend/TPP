@@ -16,10 +16,10 @@
     <h2 class="cart-title"><span class="color">{{ displayName }}</span></h2>
     <div class="cart-likes">
         <button class="cart-likes_like style">
-          <img class="" src="/src/assets/like.svg" alt="">{{ totalPositiveCount }}
+          <img src="/src/assets/like.svg" alt="">{{ totalPositiveCount }}
         </button>
         <button class="cart-likes_dislike style">
-          <img class="" src="/src/assets/dislike.svg" alt="">{{ totalNegativeCount }}
+          <img src="/src/assets/dislike.svg" alt="">{{ totalNegativeCount }}
         </button>
     </div>
   </div>
