@@ -49,15 +49,5 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
 
-  ngrok:
-    container_name: local.ngrok
-    image: wernight/ngrok
-    volumes:
-      - ./ngrok.yml:/home/ngrok/.ngrok2/ngrok.yml
-    ports:
-      - "4041:4041"
-    command: ["ngrok", "http", "tpp.api:80"]
-
-
 volumes:
   postgres-data:
