@@ -2,14 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using TPP.Api.Domain;
 using TPP.Api.EfCore;
-using TPP.Api.Models;
-using TPP.MessageBus.Shared.Users;
+using TPP.MessageBus.Shared.Users.GetDiscordUsers;
 
-namespace TPP.Api.Endpoints;
+namespace TPP.Api.Endpoints.Users.GetUsers;
 
 public static class UsersEndpoint
 {
-    public static void MapUserEndpoints(this IEndpointRouteBuilder app)
+    public static void MapGetUsersEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/users", async (
             IRequestClient<GetDiscordUsersRequest> client,
@@ -48,7 +47,7 @@ public static class UsersEndpoint
                     Id = u.Id,
                     AvatarUrl = discordUser!.AvatarUrl,
                     DisplayName = discordUser.DisplayName,
-                    IsOnline = discordUser.IsOnline,
+                    Status = discordUser.Status,
                     TotalNegativeCount = u.TotalNegativeCount,
                     TotalPositiveCount = u.TotalPositiveCount
                 };
@@ -57,7 +56,7 @@ public static class UsersEndpoint
             switch (getUsersRequest.OrderType)
             {
                 case OrderTypeEnum.ByOnline:
-                    usersResponse = usersResponse.OrderByDescending(u => u.IsOnline);
+                    usersResponse = usersResponse.OrderByDescending(u => u.Status == MessageBus.Shared.Common.DiscordUserStatus.Online);
                     break;
                 case OrderTypeEnum.ByPositive:
                     usersResponse = usersResponse.OrderByDescending(u => u.TotalPositiveCount);

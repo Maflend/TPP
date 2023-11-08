@@ -1,7 +1,8 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TPP.Api.EfCore;
-using TPP.Api.Endpoints;
+using TPP.Api.Endpoints.Posts;
+using TPP.Api.Endpoints.Users;
 using TPP.Api.Startup;
 
 var builder = WebApplication.CreateBuilder(args);

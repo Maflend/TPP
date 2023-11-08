@@ -1,15 +1,13 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using TPP.Api.Domain;
 using TPP.Api.EfCore;
-using TPP.Api.Models;
-using TPP.MessageBus.Shared.Users;
+using TPP.MessageBus.Shared.Users.GetDiscordUserByDiscordId;
 
-namespace TPP.Api.Endpoints;
+namespace TPP.Api.Endpoints.Users.GetUserById;
 
-public static class PostsEndpoints
+public static class GetUserByIdEndpoint
 {
-    public static void MapPostEndpoints(this IEndpointRouteBuilder app)
+    public static void MapGetUserByIdEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/users/{id}/posts", async (IRequestClient<GetDiscordUserByDiscordIdRequest> client, TppDbContext dbContext, Guid id) =>
         {
@@ -20,7 +18,7 @@ public static class PostsEndpoints
                 return Results.NotFound("User not found");
             }
 
-            using var request = client.Create(new GetDiscordUserByDiscordIdRequest()
+            using var request = client.Create(new GetDiscordUserByDiscordIdRequest(default)
             {
                 Id = user.DiscordUserId
             });
@@ -28,7 +26,7 @@ public static class PostsEndpoints
 
             var discordUser = response.Message;
 
-            var posts = user.Posts.Select(p => new GetPostsItemResponse()
+            var posts = user.Posts.Select(p => new GetUserByIdResponse.Post()
             {
                 Text = p.Text,
                 IsPositive = p.IsPositive
@@ -37,12 +35,12 @@ public static class PostsEndpoints
             var count = user.Posts.Count;
             var countPositive = user.Posts.Count(p => p.IsPositive);
 
-            return Results.Ok(new GetPostsResponse()
+            return Results.Ok(new GetUserByIdResponse()
             {
                 Id = id,
                 AvatarUrl = discordUser.AvatarUrl,
                 DisplayName = discordUser.DisplayName,
-                IsOnline = discordUser.IsOnline,
+                Status = discordUser.Status,
 
                 Posts = posts,
                 TotalNegativeCount = count - countPositive,
@@ -50,27 +48,5 @@ public static class PostsEndpoints
             });
         });
 
-        app.MapPost("/api/posts", async (TppDbContext dbContext, CreatePostRequest request) =>
-        {
-            var userExist = await dbContext.Users.AnyAsync(u => u.Id == request.UserId);
-
-            if (!userExist)
-            {
-                return Results.NotFound("User not found");
-            }
-
-            var post = new Post()
-            {
-                Text = request.Text,
-                IsPositive = request.IsPositive,
-                UserId = request.UserId,
-            };
-
-            dbContext.Posts.Add(post);
-
-            await dbContext.SaveChangesAsync();
-
-            return Results.NoContent();
-        });
     }
 }
