@@ -37,6 +37,8 @@
             v-for="post in object.posts"
             :class="{ active: post.isPositive, disconnect: !post.isPositive }"
           >
+            <img v-if="post.isPositive" src="/src/assets/like.svg" alt="">
+            <img v-else src="/src/assets/dislike.svg" alt="">
             {{ post.text }}
           </p>
         </div>
@@ -56,20 +58,20 @@
               @click="createPost(true)"
             >
               Хорошо
-              <img src="/src/assets/like.svg" alt="">
+              
             </button>
             <button
               class="ailling-fields_comments-buttons-btn-nogood style-btn"
               @click="createPost(false)"
             >
               Плохой
-              <img src="/src/assets/dislike.svg" alt="">
+              
             </button>
           </div>
         </div>
       </div>
       <button @click.prevent="closefn" class="close">
-        <img class="close-img" src="../assets/arrowleft.svg" alt="" />
+        <img class="close-img" src="../assets/arrowblek.svg" alt="" />
         <p class="close-text">Назад</p>
       </button>
     </div>
@@ -86,6 +88,13 @@ export default {
     closefn: Function,
   },
 
+  data() {
+    return {
+      object: {},
+      postText: "",
+    };
+  },
+  
   mounted() {
     axios
       .get(`${API_BEC_DIS}users/` + this.id + "/posts", {
@@ -98,20 +107,14 @@ export default {
       });
   },
 
-  data() {
-    return {
-      object: {},
-      postText: "",
-    };
-  },
-
   methods: {
     Close() {
       this.$emit("toggle-modal");
     },
     createPost(isPositive) {
-      if (this.postText == "") {
-        window.alert("Далбакряк");
+      if (this.postText.trim() == "") {
+        window.alert("Отзыв указан не верно");
+        this.postText = "";
         return;
       }
       axios({
@@ -150,9 +153,9 @@ export default {
   border-radius: 10px
   background-color: rgba(255,0,0,0)
 .active
-  border: 2px solid green
+  // border: 2px solid green
 .disconnect
-  border: 2px solid red
+  // border: 2px solid red
 .style-btn
   background: #fff
   padding: 10px 20px
@@ -191,6 +194,9 @@ export default {
       display: flex
       align-items: center
       cursor: pointer
+      opacity: 0.7
+      &:hover
+        opacity: 0.9
       &-img
         width: 25px
         margin-right: 0
@@ -202,12 +208,14 @@ export default {
           color: #000
     & .contact-info
       margin-right: 50px
+      display: flex
+      flex-direction: column
+      justify-content: start
       &-img
         width: 250px
         border-radius: 15px
-        margin: 0 auto
-        &:hover
-          width: 300px
+        border: 1px solid #e8e8e8
+        margin-bottom: 20px
       &-state
         display: flex
         flex-direction: column
@@ -260,16 +268,21 @@ export default {
         align-items: center
         padding-left: 20px
       &-text
-        padding-top: 20px
+        padding-top: 10px
+        padding-bottom: 10px
         height: 320px
         border: 1px solid #e8e8e8
         overflow: auto
         &-posts
-          padding: 20px
-          margin-bottom: 20px
+          padding: 20px 0 10px 0
           margin-left: 20px
-          border-radius: 15px
           width: 350px
+          display: flex
+          align-items: start
+          border-bottom: 1px solid #e8e8e8
+          & img
+            width: 15px
+            margin-right: 10px
       &_comments
         &-textarea
           padding-top: 10px
@@ -306,11 +319,11 @@ html *::-webkit-scrollbar
   width: 10px
 *::-webkit-scrollbar-track,
 html *::-webkit-scrollbar-track
-  background: #996ca5
+  background: #fff
   border-radius: 65px
 *::-webkit-scrollbar-thumb,
 html *::-webkit-scrollbar-thumb
-  background: #d99f5f
+  background: #fff
   border-radius: 5px
-  border: 3px solid #d99f5f
+  border: 3px solid #808080
 </style>

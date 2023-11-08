@@ -27,12 +27,13 @@ import Modal from "./Modal.vue";
 import Loader from "./Loader.vue";
 import axios from "axios";
 import { API_BEC_DIS } from '../api';
+import { OrderType } from '../api';
 
 export default {
   
   mounted() {
     axios
-      .get(API_BEC_DIS+"users", {
+      .get(API_BEC_DIS+`users?OrderType=${OrderType.ByOnline}`, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
@@ -52,11 +53,13 @@ export default {
       isLoading: true,
     };
   },
+
   components: {
     Cart,
     Modal,
     Loader,
   },
+
   methods: {
     openModal(id) {
       this.id = id;
@@ -67,7 +70,7 @@ export default {
     },
     updateState() {
       axios
-        .get(API_BEC_DIS+"users", {
+        .get(API_BEC_DIS+`users?OrderType=${OrderType.ByOnline}`, {
           headers: {
             "ngrok-skip-browser-warning": "true",
           },
