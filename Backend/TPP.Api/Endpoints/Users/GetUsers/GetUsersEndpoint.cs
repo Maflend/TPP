@@ -42,7 +42,7 @@ public static class UsersEndpoint
             {
                 var discordUser = response.Message.Users.FirstOrDefault(du => du.Id == u.DiscordUserId);
 
-                if(discordUser is null)
+                if (discordUser is null)
                 {
                     return null;
                 }
@@ -56,7 +56,7 @@ public static class UsersEndpoint
                     TotalNegativeCount = u.TotalNegativeCount,
                     TotalPositiveCount = u.TotalPositiveCount
                 };
-            });
+            }).Where(x => x is not null);
 
             switch (getUsersRequest.OrderType)
             {
