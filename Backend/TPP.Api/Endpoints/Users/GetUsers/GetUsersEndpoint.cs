@@ -42,6 +42,11 @@ public static class UsersEndpoint
             {
                 var discordUser = response.Message.Users.FirstOrDefault(du => du.Id == u.DiscordUserId);
 
+                if(discordUser is null)
+                {
+                    return null;
+                }
+
                 return new GetUsersItemResponse()
                 {
                     Id = u.Id,
